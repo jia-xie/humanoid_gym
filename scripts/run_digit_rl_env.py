@@ -14,10 +14,8 @@ simulation_app = app_launcher.app
 import torch
 from omni.isaac.lab.envs import ManagerBasedRLEnv
 
-from base_rl_env import CartpoleEnvCfg
-# from isaac_digit_v3.tasks.locomotion.velocity.velocity_env_cfg import LocomotionVelocityRoughEnvCfg
-from isaac_digit_v3.tasks.locomotion.velocity.config.digit_v3.rough_env_cfg import DigitRoughEnvCfg
-from isaac_digit_v3.tasks.locomotion.velocity.config.digit_v3.flat_env_cfg import DigitFlatEnvCfg
+
+from trace_humanoid.tasks.locomotion.velocity.config.trace_humanoid.flat_env_cfg import DigitFlatEnvCfg
 
 def main():
     """Main function."""
