@@ -54,6 +54,16 @@ python -m pip install -e exts/trace_humanoid
 python scripts/rsl_rl/train.py --task=Template-Isaac-Velocity-Rough-Anymal-D-v0
 ```
 
+- Play
+
+```bash
+python scripts/rsl_rl/train.py --task Velocity-Flat-Trace_Humanoid-v0 --num_env 8192 --headless --logger tensorboard
+python scripts/rsl_rl/play.py --task Velocity-Flat-Trace_Humanoid-Play-v0 --load_run 2024-11-23_23-19-02 --checkpoint model_1000.pt --num_env 32
+python scripts/rsl_rl/train.py --task Velocity-Flat-Trace_Humanoid-v0 --num_env 8192 --headless --logger tensorboard --resume True --load_run 2024-11-24_00-54-59 --checkpoint model_5800.pt
+python scripts/rsl_rl/train.py --task Velocity-Flat-Trace_Humanoid-v0 --num_env 8192 --headless --logger tensorboard --resume True --load_run 2024-11-24_14-05-21 --checkpoint model_0.pt
+python scripts/rsl_rl/train.py --task Velocity-Flat-Trace_Humanoid-v0 --num_env 8192 --headless --logger tensorboard --resume True --load_run 2024-11-24_14-25-25 --checkpoint model_8200.pt
+```
+
 ### Set up IDE (Optional)
 
 To setup the IDE, please follow these instructions:

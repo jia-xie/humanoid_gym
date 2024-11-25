@@ -19,13 +19,18 @@ class Digit_V3_RewardCfg(RewardsCfg):
     """Reward terms for the MDP."""
     termination_penalty = RewTerm(func=mdp.is_terminated, weight=-200.0)
     feet_air_time = RewTerm(
-        func=mdp.feet_air_time_positive_biped,
+        func=mdp.feet_air_time,
         weight= 2.5,
         params={
             "command_name": "base_velocity",
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names= ".*_ankle_link"),
             "threshold": 0.35,
         },
+    )
+    base_height_l2 = RewTerm(
+        func=mdp.base_height_square,
+        weight=-5.0,
+        params={"asset_cfg": SceneEntityCfg("robot", body_names=["base_link"]), "target_height": 0.20},
     )
 
 
@@ -65,8 +70,8 @@ class DigitRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.rewards.dof_pos_limits.weight = -1.0
         
         # Commands
-        self.commands.base_velocity.ranges.lin_vel_x = (0.0, 1.0)
-        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
+        self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.0)
+        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 1.0)
         self.commands.base_velocity.ranges.ang_vel_z = (-1.0, 1.0)
 
 
@@ -90,8 +95,8 @@ class DigitRoughEnvCfg_Play(DigitRoughEnvCfg):
             self.scene.terrain.terrain_generator.num_cols = 5
             self.scene.terrain.terrain_generator.curriculum = False
         
-        self.commands.base_velocity.ranges.lin_vel_x = (1.0, 1.0)
-        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
+        self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.0)
+        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 1.0)
         self.commands.base_velocity.ranges.ang_vel_z = (-0.2, 0.2)
         self.commands.base_velocity.ranges.heading = (0.0, 0.0)
         # disable randomization for play

@@ -15,8 +15,8 @@ class DigitFlatEnvCfg(DigitRoughEnvCfg):
         self.scene.height_scanner = None
         self.observations.policy.height_scan = None
         # override rewards
-        self.rewards.feet_air_time.weight = 1.0
-        self.rewards.feet_air_time.params["threshold"] = 0.35
+        self.rewards.feet_air_time.weight = 1.5
+        self.rewards.feet_air_time.params["threshold"] = 0.3
         # no terrain curriculum
         self.curriculum.terrain_levels = None
 

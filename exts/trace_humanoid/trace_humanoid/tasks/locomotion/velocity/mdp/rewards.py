@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from omni.isaac.lab.managers import SceneEntityCfg
 from omni.isaac.lab.sensors import ContactSensor
+from omni.isaac.lab.assets import Articulation, RigidObject
 
 if TYPE_CHECKING:
     from omni.isaac.lab.envs import ManagerBasedRLEnv
@@ -54,3 +55,18 @@ def feet_air_time_positive_biped(
     # no reward for zero command
     reward *= torch.norm(env.command_manager.get_command(command_name)[:, :2], dim=1) > 0.1
     return reward
+
+def base_height_square(
+    env: ManagerBasedRLEnv, target_height: float, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
+) -> torch.Tensor:
+    """Penalize asset height from its target using L2 squared kernel.
+    Note:
+        Currently, it assumes a flat terrain, i.e. the target height is in the world frame.
+    """
+    # extract the used quantities (to enable type-hinting)
+    asset: RigidObject = env.scene[asset_cfg.name]
+    base_height = asset.data.root_pos_w[:,2]
+
+    # Apply penalty only if the height is below the target
+    penalty = (target_height - base_height) ** 2
+    return penalty
