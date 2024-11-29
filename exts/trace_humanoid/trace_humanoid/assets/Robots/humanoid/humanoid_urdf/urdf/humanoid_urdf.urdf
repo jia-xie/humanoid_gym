@@ -254,7 +254,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/left_knee_link.STL" />
+          filename="../meshes/knee_collision.STL" />
       </geometry>
     </collision>
   </link>
@@ -544,7 +544,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/right_knee_link.STL" />
+          filename="../meshes/knee_collision.STL" />
       </geometry>
     </collision>
   </link>

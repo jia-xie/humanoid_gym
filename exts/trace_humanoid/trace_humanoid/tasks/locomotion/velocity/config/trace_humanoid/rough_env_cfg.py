@@ -18,20 +18,11 @@ from trace_humanoid.assets.trace_huamnoid import TRACE_HUMANOID_CFG
 class Digit_V3_RewardCfg(RewardsCfg):
     """Reward terms for the MDP."""
     termination_penalty = RewTerm(func=mdp.is_terminated, weight=-200.0)
-    feet_air_time = RewTerm(
-        func=mdp.feet_air_time,
-        weight= 2.5,
-        params={
-            "command_name": "base_velocity",
-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names= ".*_ankle_link"),
-            "threshold": 0.35,
-        },
-    )
-    base_height_l2 = RewTerm(
-        func=mdp.base_height_square,
-        weight=-5.0,
-        params={"asset_cfg": SceneEntityCfg("robot", body_names=["base_link"]), "target_height": 0.20},
-    )
+    # base_height_l2 = RewTerm(
+    #     func=mdp.base_height_square,
+    #     weight=-0.5,
+    #     params={"asset_cfg": SceneEntityCfg("robot", body_names=["base_link"]), "target_height": 0.20},
+    # )
 
 
 @configclass
@@ -47,6 +38,12 @@ class DigitRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         # actions
         self.actions.joint_pos.scale = 0.5
         # randomizations
+        self.scene.height_scanner = None
+        self.observations.policy.height_scan = None
+        # override rewards
+
+        # no terrain curriculum
+        self.curriculum.terrain_levels = None
         self.events.push_robot = None
         self.events.add_base_mass = None
         self.events.reset_base.params = {
@@ -68,11 +65,13 @@ class DigitRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.rewards.flat_orientation_l2.weight = -0.5
         self.rewards.action_rate_l2.weight = -0.01
         self.rewards.dof_pos_limits.weight = -1.0
+        self.rewards.feet_air_time.weight = 10.125
+        self.rewards.feet_air_time.params["threshold"] = 0.5
         
         # Commands
-        self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.0)
-        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 1.0)
-        self.commands.base_velocity.ranges.ang_vel_z = (-1.0, 1.0)
+        self.commands.base_velocity.ranges.lin_vel_x = (-0.4, 0.4)
+        self.commands.base_velocity.ranges.lin_vel_y = (-1.0, 1.0)
+        self.commands.base_velocity.ranges.ang_vel_z = (-0.2, 0.2)
 
 
 
@@ -95,8 +94,8 @@ class DigitRoughEnvCfg_Play(DigitRoughEnvCfg):
             self.scene.terrain.terrain_generator.num_cols = 5
             self.scene.terrain.terrain_generator.curriculum = False
         
-        self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.0)
-        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 1.0)
+        self.commands.base_velocity.ranges.lin_vel_x = (0.05, 0.05)
+        self.commands.base_velocity.ranges.lin_vel_y = (-0.25, 0.25)
         self.commands.base_velocity.ranges.ang_vel_z = (-0.2, 0.2)
         self.commands.base_velocity.ranges.heading = (0.0, 0.0)
         # disable randomization for play

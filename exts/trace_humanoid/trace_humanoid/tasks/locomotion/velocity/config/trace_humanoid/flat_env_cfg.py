@@ -15,8 +15,7 @@ class DigitFlatEnvCfg(DigitRoughEnvCfg):
         self.scene.height_scanner = None
         self.observations.policy.height_scan = None
         # override rewards
-        self.rewards.feet_air_time.weight = 1.5
-        self.rewards.feet_air_time.params["threshold"] = 0.3
+
         # no terrain curriculum
         self.curriculum.terrain_levels = None
 
@@ -32,5 +31,7 @@ class DigitFlatEnvCfg_PLAY(DigitRoughEnvCfg):
         # disable randomization for play
         self.observations.policy.enable_corruption = False
         # remove random pushing
+        self.scene.height_scanner = None
+        self.observations.policy.height_scan = None
         self.events.base_external_force_torque = None
         self.events.push_robot = None

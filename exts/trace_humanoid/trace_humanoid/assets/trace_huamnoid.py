@@ -20,7 +20,7 @@ from omni.isaac.lab.utils.assets import ISAAC_NUCLEUS_DIR
 
 TRACE_HUMANOID_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
-        usd_path=f"{ISAAC_ASSETS_DIR}/Robots/humanoid/humandoid_urdf_limit.usd",
+        usd_path=f"{ISAAC_ASSETS_DIR}/Robots/humanoid/humanoid_urdf/urdf/humanoid_urdf/humanoid_urdf.usd",
         
         # activate_contact_sensors=False,
         activate_contact_sensors=True,
@@ -43,19 +43,16 @@ TRACE_HUMANOID_CFG = ArticulationCfg(
         ),
     ),
     init_state=ArticulationCfg.InitialStateCfg(
-        pos=(0.0, 0.0, 0.39),
+        pos=(0.0, 0.0, 0.33),
         joint_pos={
             "left_hip_roll_joint": 0.0,
             "left_hip_yaw_joint": 0.0,
-            "left_hip_pitch_joint": 0.0,
-            "left_knee_joint": 0.0,
-            "left_ankle_joint": 0.0,
-            
+            "left_hip_pitch_joint": 0.30,
+            "left_knee_joint": 0.95,
             "right_hip_roll_joint": 0.0,
             "right_hip_yaw_joint": 0.0,
-            "right_hip_pitch_joint": 0.0,
-            "right_knee_joint": 0.0,
-            "right_ankle_joint": 0.0,
+            "right_hip_pitch_joint": 0.30,
+            "right_knee_joint": 0.95,
 
         },
         joint_vel={".*": 0.0},
@@ -83,17 +80,6 @@ TRACE_HUMANOID_CFG = ArticulationCfg(
                 ".*_hip_yaw_joint": 1.0,
                 ".*_hip_pitch_joint": 1.0,
                 ".*_knee_joint": 1.0, 
-                },
-        ),
-        "feet": ImplicitActuatorCfg(
-            joint_names_expr=[ ".*_ankle_joint"],
-            # effort_limit=100,
-            # velocity_limit=100.0,
-            stiffness={
-                ".*_ankle_joint": 300.0,
-                },
-            damping={
-                ".*_ankle_joint": 1.0,
                 },
         ),
     },
