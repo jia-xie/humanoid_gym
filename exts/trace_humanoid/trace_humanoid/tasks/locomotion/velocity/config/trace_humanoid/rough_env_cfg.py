@@ -17,7 +17,7 @@ from trace_humanoid.assets.trace_huamnoid import TRACE_HUMANOID_CFG
 @configclass 
 class Digit_V3_RewardCfg(RewardsCfg):
     """Reward terms for the MDP."""
-    termination_penalty = RewTerm(func=mdp.is_terminated, weight=-200.0)
+    termination_penalty = RewTerm(func=mdp.is_terminated, weight=-4000.0)
     # base_height_l2 = RewTerm(
     #     func=mdp.base_height_square,
     #     weight=-0.5,
@@ -65,8 +65,6 @@ class DigitRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.rewards.flat_orientation_l2.weight = -0.5
         self.rewards.action_rate_l2.weight = -0.01
         self.rewards.dof_pos_limits.weight = -1.0
-        self.rewards.feet_air_time.weight = 10.125
-        self.rewards.feet_air_time.params["threshold"] = 0.5
         
         # Commands
         self.commands.base_velocity.ranges.lin_vel_x = (-0.4, 0.4)
