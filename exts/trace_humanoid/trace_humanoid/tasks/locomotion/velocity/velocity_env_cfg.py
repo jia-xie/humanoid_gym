@@ -302,11 +302,11 @@ class RewardsCfg:
             "asset_cfg": SceneEntityCfg("robot", body_names=".*_knee_link"),
         },
     )
-    pen_undesired_contacts = RewTerm(
-        func=mdp.undesired_contacts,
-        weight=-100.0,
-        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*hip_pitch_link"), "threshold": 1.0},
-    )
+    # pen_undesired_contacts = RewTerm(
+    #     func=mdp.undesired_contacts,
+    #     weight=-100.0,
+    #     params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*hip_pitch_link"), "threshold": 1.0},
+    # )
     pen_lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)
     pen_ang_vel_xy = RewTerm(func=mdp.ang_vel_xy_l2, weight=-0.05)
     pen_action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.01)
