@@ -264,26 +264,34 @@ class EventCfg:
 class RewardsCfg:
     """Reward terms for the MDP."""
 
-    # -- task
-    track_lin_vel_xy_exp = RewTerm(
+    # rewards
+    rew_lin_vel_xy = RewTerm(
         func=mdp.track_lin_vel_xy_exp, weight=10.0, params={"command_name": "base_velocity", "std": math.sqrt(0.25)}
     )
-    track_ang_vel_z_exp = RewTerm(
-        func=mdp.track_ang_vel_z_exp, weight=5.5, params={"command_name": "base_velocity", "std": math.sqrt(0.25)}
+    rew_ang_vel_z = RewTerm(
+        func=mdp.track_ang_vel_z_exp, weight=5, params={"command_name": "base_velocity", "std": math.sqrt(0.25)}
     )
-    # -- penalties
-    lin_vel_z_l2 = RewTerm(func=mdp.lin_vel_z_l2, weight=-20.0)
-    ang_vel_xy_l2 = RewTerm(func=mdp.ang_vel_xy_l2, weight=-0.05)
-    dof_torques_l2 = RewTerm(func=mdp.joint_torques_l2, weight=-1.0e-5)
-    dof_acc_l2 = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-7)
-    action_rate_l2 = RewTerm(func=mdp.action_rate_l2, weight=-0.1)
-    feet_air_time = RewTerm(
-        func=mdp.feet_air_time,
-        weight=100.125,
+    rew_no_fly = RewTerm(
+        func=mdp.no_fly,
+        weight=5.0,
         params={
-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_knee_link"),
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*knee_link"),
+        },
+    )
+
+    # penalizations
+    pen_joint_deviation = RewTerm(
+        func=mdp.joint_deviation_l1,
+        weight=-10,
+        params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*hip_pitch_joint"])},
+    )
+    pen_feet_air_time = RewTerm(
+        func=mdp.feet_air_time,
+        weight=100.0,
+        params={
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*knee_link"),
             "command_name": "base_velocity",
-            "threshold": 0.5,
+            "threshold": 0.3,
         },
     )
     feet_slide = RewTerm(
@@ -294,24 +302,27 @@ class RewardsCfg:
             "asset_cfg": SceneEntityCfg("robot", body_names=".*_knee_link"),
         },
     )
-    joint_deviation_hip = RewTerm(
-        func=mdp.joint_deviation_l1,
-        weight=-2.0,
-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*hip_pitch_joint"])},
+    pen_undesired_contacts = RewTerm(
+        func=mdp.undesired_contacts,
+        weight=-100.0,
+        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*hip_pitch_link"), "threshold": 1.0},
     )
-    joint_deviation_knee = RewTerm(
-        func=mdp.joint_deviation_l1,
-        weight=-0.4,
-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*knee_joint"])},
-    )
-    # undesired_contacts = RewTerm(
-    #     func=mdp.undesired_contacts,
-    #     weight=-1.0,
-    #     params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*THIGH"), "threshold": 1.0},
+    pen_lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)
+    pen_ang_vel_xy = RewTerm(func=mdp.ang_vel_xy_l2, weight=-0.05)
+    pen_action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.01)
+    pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-7)
+    pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-5.0)
+    # pen_applied_torque_limits = RewTerm(func=mdp.applied_torque_limits, weight=-0.1)
+    # pen_no_contact = RewTerm(
+    #     func=mdp.no_contact,
+    #     weight=-5.0,
+    #     params={
+    #         "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*knee_link"),
+    #     },
     # )
-    # -- optional penalties
-    flat_orientation_l2 = RewTerm(func=mdp.flat_orientation_l2, weight=0.0)
-    dof_pos_limits = RewTerm(func=mdp.joint_pos_limits, weight=0.0)
+    pen_target_height = RewTerm(func=mdp.base_height_square, weight=-5, 
+                                params={"asset_cfg": SceneEntityCfg("robot", body_names=["base_link"]), "target_height": .35},
+    )
 
 
 @configclass
@@ -322,8 +333,7 @@ class TerminationsCfg:
     base_contact = DoneTerm(
         func=mdp.illegal_contact,
         params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=[
-            "base_link",
-            ".*hip_pitch_link"]), 
+            "base_link"]), 
             "threshold": 1.0},
     )
 

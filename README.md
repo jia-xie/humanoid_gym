@@ -57,9 +57,9 @@ python scripts/rsl_rl/train.py --task=Template-Isaac-Velocity-Rough-Anymal-D-v0
 - Play
 
 ```bash
-python scripts/rsl_rl/train.py --task Velocity-Flat-Trace_Humanoid-v0 --num_env 8192 --headless --logger tensorboard
+python scripts/rsl_rl/train.py --task Velocity-Flat-Trace_Humanoid-v0 --num_env 8192 --headless --logger mandb
 python scripts/rsl_rl/train.py --task Velocity-Rough-Trace_Humanoid-v0 --num_env 8192 --headless --logger tensorboard
-python scripts/rsl_rl/play.py --task Velocity-Flat-Trace_Humanoid-v0 --num_env 50
+python scripts/rsl_rl/play.py --task Velocity-Flat-Trace_Humanoid-v0 --num_env 50 --load_run 2024-12-08_15-21-23 --checkpoint model_39000.pt
 python scripts/rsl_rl/play.py --task Velocity-Rough-Trace_Humanoid-v0 --num_env 50 --load_run 2024-11-29_13-27-46 --checkpoint model_51400.pt
 python scripts/rsl_rl/play.py --task Velocity-Rough-Trace_Humanoid-v0 --num_env 50 --load_run 2024-11-29_13-27-46 --checkpoint model_51400.pt
 python scripts/rsl_rl/play.py --task Velocity-Flat-Trace_Humanoid-Play-v0 --load_run 2024-11-23_23-19-02 --checkpoint model_1000.pt --num_env 32
