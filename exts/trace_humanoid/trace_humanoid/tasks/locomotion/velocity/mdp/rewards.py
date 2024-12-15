@@ -28,6 +28,7 @@ def feet_air_time(
     first_contact = contact_sensor.compute_first_contact(env.step_dt)[:, sensor_cfg.body_ids]
     last_air_time = contact_sensor.data.last_air_time[:, sensor_cfg.body_ids]
     reward = torch.sum((last_air_time - threshold) * first_contact, dim=1)
+    # print("air", reward)
     # no reward for zero command
     reward *= torch.norm(env.command_manager.get_command(command_name)[:, :2], dim=1) > 0.1
     return reward
@@ -115,3 +116,20 @@ def no_contact(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg) -> torch.Tens
     contacts = latest_contact_forces > 1.0  # Returns a boolean tensor where True indicates contact
 
     return (torch.sum(contacts.float(), dim=1) == 0).float()
+
+def leg_symmetry_l2(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    # asset: Articulation = env.scene[asset_cfg.name]
+    # # print(asset.data.joint_pos[:, asset_cfg.joint_ids])
+    # return torch.sum(asset.data.joint_pos[:, asset_cfg.joint_ids], dim=1)
+    asset: Articulation = env.scene[asset_cfg.name]
+
+    left_leg_joint_ids = asset_cfg.joint_ids[0]
+    right_leg_joint_ids = asset_cfg.joint_ids[1]
+
+    left_leg_positions = asset.data.joint_pos[:, left_leg_joint_ids]
+    right_leg_positions = asset.data.joint_pos[:, right_leg_joint_ids]
+    # print(left_leg_positions, right_leg_positions)
+    # Compute the symmetry penalty using L2 norm
+    symmetry_penalty = torch.abs(left_leg_positions - right_leg_positions)
+    # print(symmetry_penalty)
+    return symmetry_penalty

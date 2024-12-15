@@ -17,7 +17,7 @@ from trace_humanoid.assets.trace_huamnoid import TRACE_HUMANOID_CFG
 @configclass 
 class Digit_V3_RewardCfg(RewardsCfg):
     """Reward terms for the MDP."""
-    termination_penalty = RewTerm(func=mdp.is_terminated, weight=-4000.0)
+
     # base_height_l2 = RewTerm(
     #     func=mdp.base_height_square,
     #     weight=-0.5,
